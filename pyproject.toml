@@ -9,6 +9,7 @@ dependencies = [
     "fastapi[standard]>=0.115.5",
     "pycountry>=24.6.1",
     "pydantic-extra-types>=2.10.0",
+    "pytest-cov>=6.0.0",
 ]
 
 [dependency-groups]
@@ -59,7 +60,19 @@ warn_no_return = false
 exclude_dirs = ["tests", ".venv"]
 
 [tool.pytest.ini_options]
-testpaths = "tests"
+testpaths = "tests/"
 pythonpath = "."
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
+addopts = """
+    -vvv \
+    --cov --cov-report html \
+"""
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 50

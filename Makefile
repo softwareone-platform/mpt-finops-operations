@@ -22,6 +22,10 @@ types:
 security-checks:
 	uv run bandit -c pyproject.toml -r .
 
+.PHONY: tests
+tests:
+	uv run pytest
+
 # TODO: Move to CI once it's set  and store it as artefact
 openapi.json:
 	uv run python -m scripts.generate_openapi_json openapi.json
