@@ -10,3 +10,6 @@ lint:
 format:
 	uv run ruff check . --fix --fix-only --show-fixes
 	uv run ruff format .
+
+openapi.json:
+	uv run python -m scripts.generate_openapi_json openapi.json
