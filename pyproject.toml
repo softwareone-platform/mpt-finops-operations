@@ -56,3 +56,6 @@ docstring-code-format = true
 
 [tool.mypy]
 warn_no_return = false
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
