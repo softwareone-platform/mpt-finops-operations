@@ -4,3 +4,27 @@ services:
     restart: always
     ports:
       - "8000:8000"
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecurepass
+    ports:
+      - "5433:5432"
+
+  pgadmin:
+    image: dcagatay/pwless-pgadmin4
+    depends_on:
+      db: "service_started"
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecurepass
+      POSTGRES_HOST: "*"
+      POSTGRES_PORT: "5432"
+    ports:
+      - "8001:80"
+
