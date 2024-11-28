@@ -47,9 +47,6 @@ ignore = [
     "B904",  # Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
 ]
 
-[tool.ruff.lint.pycodestyle]
-max-line-length = 100
-
 [tool.ruff.format]
 quote-style = "double"
 docstring-code-format = true
