@@ -11,5 +11,10 @@ format:
 	uv run ruff check . --fix --fix-only --show-fixes
 	uv run ruff format .
 
+.PHONY: types
+types:
+	uv run mypy .
+
+# TODO: Move to CI once it's set  and store it as artefact
 openapi.json:
 	uv run python -m scripts.generate_openapi_json openapi.json

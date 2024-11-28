@@ -121,12 +121,8 @@ class User(UserBase):
 
 # Entitlement Models
 class EntitlementBase(CamelModel):
-    sponsor_name: str = Field(
-        description="Name of the sponsor for this entitlement", examples=["AWS"]
-    )
-    sponsor_external_id: str = Field(
-        description="Vendor account number from MPT", examples=["ACC-1234-5678"]
-    )
+    sponsor_name: str = Field(description="Name of the sponsor for this entitlement", examples=["AWS"])
+    sponsor_external_id: str = Field(description="Vendor account number from MPT", examples=["ACC-1234-5678"])
     sponsor_container_id: str = Field(
         description="Azure Sub ID, AWS Account number, GCP Project ID etc.",
         examples=["d4500e78-ac78-4445-89e8-5b8a4d482035"],
@@ -174,16 +170,12 @@ class DataSource(CamelModel):
         description="ID of the organization this data source belongs to",
         examples=["123e4567-e89b-12d3-a456-426614174000"],
     )
-    type: DataSourceType = Field(
-        description="Type of the data source", examples=["aws_root"]
-    )
+    type: DataSourceType = Field(description="Type of the data source", examples=["aws_root"])
     resources_changed_this_month: int = Field(
         description="Number of resources that changed during the current month",
         examples=[42],
     )
-    expenses_so_far_this_month: Decimal = Field(
-        description="Current month's expenses up to now", examples=["1234.56"]
-    )
+    expenses_so_far_this_month: Decimal = Field(description="Current month's expenses up to now", examples=["1234.56"])
     expenses_forecast_this_month: Decimal = Field(
         description="Forecasted expenses for the current month", examples=["2500.00"]
     )
@@ -257,9 +249,7 @@ async def get_organization(organization_id: uuid.UUID):
     response_model=Organization,
     tags=["Organizations"],
 )
-async def update_organization(
-    organization_id: uuid.UUID, organization: OrganizationUpdate
-):
+async def update_organization(organization_id: uuid.UUID, organization: OrganizationUpdate):
     pass
 
 
@@ -289,9 +279,7 @@ async def update_user(user_id: uuid.UUID, user: UserUpdate):
     response_model=PaginatedResponse[User],
     tags=["Users"],
 )
-async def list_organization_users(
-    organization_id: uuid.UUID, pagination: PaginationParams = Depends()
-):
+async def list_organization_users(organization_id: uuid.UUID, pagination: PaginationParams = Depends()):
     pass
 
 
@@ -357,7 +345,5 @@ async def get_data_source(data_source_id: uuid.UUID):
     response_model=PaginatedResponse[DataSource],
     tags=["Data Sources"],
 )
-async def list_organization_data_sources(
-    organization_id: uuid.UUID, pagination: PaginationParams = Depends()
-):
+async def list_organization_data_sources(organization_id: uuid.UUID, pagination: PaginationParams = Depends()):
     pass
