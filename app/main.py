@@ -82,9 +82,6 @@ class Organization(OrganizationBase):
         examples=["5000.00"],
     )
 
-    class Config:
-        from_attributes = True
-
 
 # User Models
 
@@ -114,9 +111,6 @@ class User(UserBase):
     role: UserRole
     created_at: datetime.datetime
     last_login_at: datetime.datetime
-
-    class Config:
-        from_attributes = True
 
 
 # Entitlement Models
@@ -152,9 +146,6 @@ class Entitlement(EntitlementBase):
         description="User ID who terminated the entitlement",
     )
 
-    class Config:
-        from_attributes = True
-
 
 # Data source models
 class DataSourceType(str, Enum):
@@ -183,9 +174,6 @@ class DataSource(CamelModel):
         description="URL to the icon representing this data source",
         examples=["https://example.com/icons/aws.png"],
     )
-
-    class Config:
-        from_attributes = True
 
 
 app = FastAPI(
