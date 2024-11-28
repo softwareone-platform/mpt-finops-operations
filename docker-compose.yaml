@@ -2,16 +2,16 @@ services:
   app:
     build: .
     restart: always
+    env_file:
+      - .env
     ports:
       - "8000:8000"
 
   db:
     image: postgres:17
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: app
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecurepass
+    env_file:
+      - .env
     ports:
       - "5433:5432"
     healthcheck:
@@ -25,12 +25,8 @@ services:
     depends_on:
       db:
         condition: "service_healthy"
-    environment:
-      POSTGRES_DB: app
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecurepass
-      POSTGRES_HOST: "*"
-      POSTGRES_PORT: "5432"
+    env_file:
+      - .env
     ports:
       - "8001:80"
     restart: unless-stopped

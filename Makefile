@@ -1,3 +1,6 @@
+.env:
+	cp env.example .env
+
 .PHONY: dev-server
 dev-server:
 	uv run fastapi dev app/main.py
