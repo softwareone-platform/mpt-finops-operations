@@ -61,6 +61,15 @@ jobs:
           path: htmlcov
           retention-days: 10
 
-      # TODO: Generate the openapi.json spec and save it as artefact
+      - name: Generate openapi.json
+        run: uv run python -m scripts.generate_openapi_json openapi.json
+
+      - name: Save openapi.json the artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-spec
+          path: openapi.json
+          retention-days: 10
+
       # TODO: Build the production docker container
 
