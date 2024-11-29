@@ -36,10 +36,11 @@ jobs:
       - name: Create the .env file
         run: cp env.example .env
 
+      - name: Run formatting checks
+        run: uv run ruff format --check --diff .
+
       - name: Run linting
         run: uv run ruff check .
-
-      # TODO: Add formatting checks
 
       - name: Run type checks
         run: uv run mypy .
@@ -50,7 +51,13 @@ jobs:
       - name: Run tests
         run: uv run pytest
 
-      # TODO: save coverage report in artefacts
+      - name: Save code coverage report in the artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov
+          retention-days: 10
+
       # TODO: Generate the openapi.json spec and save it as artefact
       # TODO: Build the production docker container
 

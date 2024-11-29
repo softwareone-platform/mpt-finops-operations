@@ -8,9 +8,10 @@ dev-server:
 .PHONY: lint
 lint:
 	uv run ruff check .
+	uv run ruff format --check --diff .
 
-.PHONY: format
-format:
+.PHONY: fix
+fix:
 	uv run ruff check . --fix --fix-only --show-fixes
 	uv run ruff format .
 
