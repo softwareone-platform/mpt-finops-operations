@@ -65,3 +65,5 @@ jobs:
           name: openapi-spec
           path: openapi.json
           retention-days: 10
+
+      # TODO: Build the production docker container
