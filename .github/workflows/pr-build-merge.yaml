@@ -4,10 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    # TODO: remove chore/MPT-4917-setup-dev-env branch when we Make Main Great Again
     branches:
       - main
-      - chore/MPT-4917-setup-dev-env
 
 permissions:
   contents: read
