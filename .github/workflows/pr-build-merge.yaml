@@ -10,8 +10,6 @@ on:
 permissions:
   contents: read
 
-# TODO: split into indivudial jobs and steps
-#       use build the prod docker container
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -68,6 +66,3 @@ jobs:
           name: openapi-spec
           path: openapi.json
           retention-days: 10
-
-      # TODO: Build the production docker container
-
