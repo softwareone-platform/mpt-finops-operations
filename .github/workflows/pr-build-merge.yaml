@@ -10,9 +10,10 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  # TODO: split into indivudial jobs and steps
+  full-pipeline:
+    name: python
     runs-on: ubuntu-latest
-    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -33,10 +34,6 @@ jobs:
 
       - name: Create the .env file
         run: cp env.example .env
-  lint:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
 
       - name: Run linting
         run: uv run ruff check .
@@ -55,3 +52,4 @@ jobs:
       # TODO: save coverage report in artefacts
       # TODO: Generate the openapi.json spec and save it as artefact
       # TODO: Build the production docker container
+
