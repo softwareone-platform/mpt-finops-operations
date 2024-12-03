@@ -30,7 +30,7 @@ security-checks:
 
 .PHONY: tests
 tests:
-	uv run pytest -s
+	uv run pytest
 
 .PHONY: db-cli
 db-cli:
