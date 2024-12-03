@@ -8,9 +8,10 @@ dev-server:
 .PHONY: lint
 lint:
 	uv run ruff check .
+	uv run ruff format --check --diff .
 
-.PHONY: format
-format:
+.PHONY: fix
+fix:
 	uv run ruff check . --fix --fix-only --show-fixes
 	uv run ruff format .
 
@@ -25,7 +26,3 @@ security-checks:
 .PHONY: tests
 tests:
 	uv run pytest
-
-# TODO: Move to CI once it's set  and store it as artefact
-openapi.json:
-	uv run python -m scripts.generate_openapi_json openapi.json
