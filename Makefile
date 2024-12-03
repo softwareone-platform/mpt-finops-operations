@@ -41,7 +41,6 @@ gen-migration: message =
 gen-migration:
 	uv run alembic revision --autogenerate -m "$(message)"
 
-
 .PHONY: migrate
 migrate:
 	uv run alembic upgrade head
