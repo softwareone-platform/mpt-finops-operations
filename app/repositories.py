@@ -3,6 +3,8 @@ from uuid import UUID
 
 from fastapi import HTTPException
 from fastapi import status as http_status
+from fastapi_pagination.ext.sqlmodel import paginate
+from fastapi_pagination.limit_offset import LimitOffsetPage, LimitOffsetParams
 from sqlalchemy import delete, select
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -42,6 +44,9 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
     async def fetch_all(self) -> list[ModelT]:
         results = await self.session.execute(statement=select(self.model_cls))
         return results.scalars().all()
+
+    async def fetch_page(self, pagination_params: LimitOffsetParams | None = None) -> LimitOffsetPage[ModelT]:
+        return await paginate(self.session, self.model_cls, pagination_params)
 
     async def update(self, id: str | UUID, data: ModelUpdateT) -> ModelT:
         obj = await self.get(id=id)

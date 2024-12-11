@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
+from fastapi_pagination.limit_offset import LimitOffsetPage
 
 from app import repositories
 from app.db import DBSession
@@ -14,29 +15,24 @@ async def get_entitlement_repo(session: DBSession) -> repositories.EntitlementRe
 EntitlementRepo = Annotated[repositories.EntitlementRepository, Depends(get_entitlement_repo)]
 
 
-router = APIRouter(prefix="/entitlements")
-
-# TODO: Incorporate CamelModel
-# TODO: Auto populate tags
-# TODO: Add get all endpoint
-# TODO: Add pagination to get all endpoint
+router = APIRouter()
 
 
-@router.get("/", response_model=list[EntitlementRead], tags=["Entitlements"])
+@router.get("/", response_model=LimitOffsetPage[EntitlementRead])
 async def get_entitlements(entitlements: EntitlementRepo):
-    return await entitlements.fetch_all()
+    return await entitlements.fetch_page()
 
 
-@router.get("/{id}", response_model=EntitlementRead, tags=["Entitlements"])
+@router.get("/{id}", response_model=EntitlementRead)
 async def get_entitlement_by_id(id: str, entitlements: EntitlementRepo):
     return await entitlements.get(id=id)
 
 
-@router.post("/", response_model=EntitlementRead, status_code=status.HTTP_201_CREATED, tags=["Entitlements"])
+@router.post("/", response_model=EntitlementRead, status_code=status.HTTP_201_CREATED)
 async def create_entitlement(data: EntitlementCreate, entitlements: EntitlementRepo):
     return await entitlements.create(data=data)
 
 
-@router.patch("/{id}", response_model=EntitlementRead, tags=["Entitlements"])
+@router.patch("/{id}", response_model=EntitlementRead)
 async def update_entitlement(id: str, data: EntitlementUpdate, entitlements: EntitlementRepo):
     return await entitlements.update(id=id, data=data)

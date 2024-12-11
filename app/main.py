@@ -1,3 +1,4 @@
+import fastapi_pagination
 from fastapi import FastAPI
 
 from app import settings
@@ -19,7 +20,9 @@ app = FastAPI(
     debug=settings.debug,
 )
 
+fastapi_pagination.add_pagination(app)
+
 
 # TODO: Add healthcheck
 
-app.include_router(entitlements.router)
+app.include_router(entitlements.router, prefix="/entitlements", tags=["Entitlements"])

@@ -9,6 +9,7 @@ dependencies = [
     "asyncpg>=0.30.0",
     "fastapi-async-sqlalchemy>=0.6.1",
     "fastapi-camelcase>=2.0.0",
+    "fastapi-pagination>=0.12.32",
     "fastapi[standard]>=0.115.5",
     "pycountry>=24.6.1",
     "pydantic-extra-types>=2.10.0",

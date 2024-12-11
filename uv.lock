@@ -263,6 +263,19 @@ standard = [
 ]
 
 [[package]]
+name = "fastapi-pagination"
+version = "0.12.32"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/56/b6/b431ddef4bec5011231ac3deb2da3a334207ef110987bc4971ac40f59865/fastapi_pagination-0.12.32.tar.gz", hash = "sha256:b808b5b8af493c51d96ae0091b60532b25688cbca1350f39cb72f10d4d69a6ab", size = 26531 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/23/0d57a0a67e3bf51b5d2d91a52c7bb7421bd8006aea694be01e37e9830901/fastapi_pagination-0.12.32-py3-none-any.whl", hash = "sha256:38e7e72abf252cbebbc1beff9081e4929762756c04959c471b2a5866bb7f0aaf", size = 42816 },
+]
+
+[[package]]
 name = "greenlet"
 version = "3.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -510,6 +523,7 @@ dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "fastapi-async-sqlalchemy" },
     { name = "fastapi-camelcase" },
+    { name = "fastapi-pagination" },
     { name = "pycountry" },
     { name = "pydantic-extra-types" },
     { name = "pydantic-settings" },
@@ -538,6 +552,7 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.115.5" },
     { name = "fastapi-async-sqlalchemy", specifier = ">=0.6.1" },
     { name = "fastapi-camelcase", specifier = ">=2.0.0" },
+    { name = "fastapi-pagination", specifier = ">=0.12.32" },
     { name = "pycountry", specifier = ">=24.6.1" },
     { name = "pydantic-extra-types", specifier = ">=2.10.0" },
     { name = "pydantic-settings", specifier = ">=2.6.1" },
