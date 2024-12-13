@@ -22,14 +22,14 @@ class UUIDModel(SQLModel):
 class TimestampModel(SQLModel):
     created_at: datetime.datetime = Field(
         nullable=False,
-        default_factory=datetime.datetime.utcnow,
+        default_factory=lambda: datetime.datetime.now(datetime.UTC),
         sa_type=sa.DateTime(timezone=True),
         sa_column_kwargs={"server_default": sa.text("current_timestamp(0)")},
     )
 
     updated_at: datetime.datetime = Field(
         nullable=False,
-        default_factory=datetime.datetime.utcnow,
+        default_factory=lambda: datetime.datetime.now(datetime.UTC),
         sa_type=sa.DateTime(timezone=True),
         sa_column_kwargs={
             "server_default": sa.text("current_timestamp(0)"),

@@ -1,30 +1,37 @@
-from typing import ClassVar
 from uuid import UUID
 
 from fastapi import HTTPException
 from fastapi import status as http_status
 from fastapi_pagination.ext.sqlmodel import paginate
 from fastapi_pagination.limit_offset import LimitOffsetPage, LimitOffsetParams
-from sqlalchemy import delete, select
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, delete, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Entitlement, EntitlementCreate, EntitlementUpdate, UUIDModel
 
 
 class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQLModel]:
-    # TODO: Extract these from the type hints if possible
-    #       self.__orig_class__.__args__[0]
-
-    model_cls: ClassVar[type[ModelT]]
-    model_create_cls: ClassVar[type[ModelCreateT]]
-    model_update_cls: ClassVar[type[ModelUpdateT]]
-
     def __init__(self, session: AsyncSession):
         self.session = session
 
+    @classmethod
+    def _get_generic_cls_args(cls):
+        return next(base_cls.__args__ for base_cls in cls.__orig_bases__ if base_cls.__origin__ is BaseRepository)
+
+    @property
+    def model_cls(self) -> type[ModelT]:
+        return self._get_generic_cls_args()[0]
+
+    @property
+    def model_create_cls(self) -> type[ModelCreateT]:
+        return self._get_generic_cls_args()[1]
+
+    @property
+    def model_update_cls(self) -> type[ModelCreateT]:
+        return self._get_generic_cls_args()[2]
+
     async def create(self, data: ModelCreateT) -> ModelT:
-        obj = self.model_cls(**data.dict())
+        obj = self.model_cls(**data.model_dump())
         self.session.add(obj)
         await self.session.commit()
         await self.session.refresh(obj)
@@ -32,27 +39,37 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         return obj
 
     async def get(self, id: str | UUID) -> ModelT:
-        statement = select(self.model_cls).where(self.model_cls.id == id)
-        results = await self.session.execute(statement=statement)
-        obj: ModelT | None = results.scalar_one_or_none()
+        obj = await self.session.get(self.model_cls, id)
 
         if obj is None:
-            raise HTTPException(status_code=http_status.HTTP_404_NOT_FOUND, detail="The object hasn't been found!")
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND,
+                detail=f"{self.model_cls.__name__} with ID {str(id)} wasn't found",
+            )
 
         return obj
 
     async def fetch_all(self) -> list[ModelT]:
-        results = await self.session.execute(statement=select(self.model_cls))
-        return results.scalars().all()
+        results = await self.session.exec(select(self.model_cls))
+        return results.all()
 
     async def fetch_page(self, pagination_params: LimitOffsetParams | None = None) -> LimitOffsetPage[ModelT]:
         return await paginate(self.session, self.model_cls, pagination_params)
 
     async def update(self, id: str | UUID, data: ModelUpdateT) -> ModelT:
-        obj = await self.get(id=id)
+        statement = select(self.model_cls).where(self.model_cls.id == id)
+        results = await self.session.exec(statement)
 
-        for k, v in data.dict(exclude_unset=True).items():
-            setattr(obj, k, v)
+        obj: ModelT | None = results.first()
+
+        if obj is None:
+            raise HTTPException(
+                status_code=http_status.HTTP_404_NOT_FOUND,
+                detail=f"{self.model_cls.__name__} with ID {str(id)} wasn't found",
+            )
+
+        for key, value in data.model_dump(exclude_unset=True).items():
+            setattr(obj, key, value)
 
         self.session.add(obj)
         await self.session.commit()
@@ -70,6 +87,10 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
 
 
 class EntitlementRepository(BaseRepository[Entitlement, EntitlementCreate, EntitlementUpdate]):
-    model_cls = Entitlement
-    model_create_cls = EntitlementCreate
-    model_update_cls = EntitlementUpdate
+    pass
+    # async def terminate(self, id: str | UUID) -> Entitlement:
+    #     async with self.updating(id=id) as entitlement:
+    #         entitlement.terminated_at = datetime.datetime.now(datetime.UTC)
+    #         entitlement.terminated_by = ...
+    #
+    #     return entitlement
