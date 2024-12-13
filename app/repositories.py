@@ -1,10 +1,11 @@
+from collections.abc import Sequence
 from uuid import UUID
 
 from fastapi import HTTPException
 from fastapi import status as http_status
 from fastapi_pagination.ext.sqlmodel import paginate
 from fastapi_pagination.limit_offset import LimitOffsetPage, LimitOffsetParams
-from sqlmodel import SQLModel, delete, select
+from sqlmodel import SQLModel, col, delete, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.models import Entitlement, EntitlementCreate, EntitlementUpdate, UUIDModel
@@ -49,7 +50,7 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
 
         return obj
 
-    async def fetch_all(self) -> list[ModelT]:
+    async def fetch_all(self) -> Sequence[ModelT]:
         results = await self.session.exec(select(self.model_cls))
         return results.all()
 
@@ -78,7 +79,7 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         return obj
 
     async def delete(self, id: str | UUID) -> bool:
-        statement = delete(self.model_cls).where(self.model_cls.id == id)
+        statement = delete(self.model_cls).where(col(self.model_cls.id) == id)
 
         await self.session.execute(statement=statement)
         await self.session.commit()
