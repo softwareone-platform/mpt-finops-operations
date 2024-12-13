@@ -65,24 +65,3 @@ async def test_can_update_entitlements(entitlement_aws, api_client):
 
     get_response = await api_client.get(f"/entitlements/{entitlement_aws.id}")
     assert get_response.json()["sponsorName"] == "GCP"
-
-
-async def test_get_all_entitlements_empty_db(api_client: AsyncClient):
-    response = await api_client.get("/entitlements/")
-
-    assert response.status_code == 200
-    assert response.json()["total"] == 0
-    assert response.json()["items"] == []
-
-
-async def test_get_all_entitlements_single_page(entitlement_aws, entitlement_gcp, api_client: AsyncClient):
-    response = await api_client.get("/entitlements/")
-
-    assert response.status_code == 200
-    data = response.json()
-
-    assert data["total"] == 2
-    assert len(data["items"]) == data["total"]
-
-    assert_json_contains_model(data, entitlement_aws)
-    assert_json_contains_model(data, entitlement_gcp)

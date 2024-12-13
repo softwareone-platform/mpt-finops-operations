@@ -37,6 +37,9 @@ dev = [
 line-length = 120
 target-version = "py312"
 output-format = "full"
+extend-exclude = [
+    "migrations/versions/",
+]
 
 [tool.ruff.lint]
 select = [
