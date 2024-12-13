@@ -44,11 +44,19 @@ jobs:
       - name: Run security checks
         run: uv run bandit -c pyproject.toml -r .
 
+      - name: Start the testing DB container
+        run: docker compose up test_db -d
+
       - name: Run tests
         run: uv run pytest
 
+      - name: Stop the testing DB container
+        if: always()
+        run: docker compose down test_db
+
       - name: Save code coverage report in the artefacts
         uses: actions/upload-artifact@v4
+        if: ${{ !env.ACT }}
         with:
           name: coverage-report
           path: htmlcov
@@ -59,6 +67,7 @@ jobs:
 
       - name: Save openapi.json the artefacts
         uses: actions/upload-artifact@v4
+        if: ${{ !env.ACT }}
         with:
           name: openapi-spec
           path: openapi.json

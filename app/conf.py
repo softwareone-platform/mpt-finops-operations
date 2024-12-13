@@ -13,12 +13,11 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: int
 
-    # TODO: Actually set up the testing db
-    # test_postgres_db: str
-    # test_postgres_user: str
-    # test_postgres_password: str
-    # test_postgres_host: str
-    # test_postgres_port: int
+    test_postgres_db: str
+    test_postgres_user: str
+    test_postgres_password: str
+    test_postgres_host: str
+    test_postgres_port: int
 
     debug: bool = False
 
@@ -35,10 +34,6 @@ class Settings(BaseSettings):
 
     @computed_field
     def test_postgres_async_url(self) -> PostgresDsn:
-        return self.postgres_async_url
-
-        # TODO: Actually set up the testing db
-
         return PostgresDsn.build(
             scheme="postgresql+asyncpg",
             username=self.test_postgres_user,
