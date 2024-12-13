@@ -66,10 +66,3 @@ jobs:
           name: openapi-spec
           path: openapi.json
           retention-days: 10
-
-      - name: Save openapi.json the artefacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: openapi-spec
-          path: openapi.json
-          retention-days: 10
