@@ -65,3 +65,19 @@ async def test_can_update_entitlements(entitlement_aws, api_client):
 
     get_response = await api_client.get(f"/entitlements/{entitlement_aws.id}")
     assert get_response.json()["sponsorName"] == "GCP"
+
+
+async def test_create_entitlement_with_incomplete_data(api_client: AsyncClient):
+    response = await api_client.post(
+        "/entitlements/",
+        json={
+            "sponsorName": "AWS",
+            "sponsorExternalId": "EXTERNAL_ID_987123",
+        },
+    )
+
+    assert response.status_code == 422
+    [detail] = response.json()["detail"]
+
+    assert detail["type"] == "missing"
+    assert detail["loc"] == ["body", "sponsorContainerId"]
