@@ -48,7 +48,9 @@ async def db_session() -> AsyncGenerator[AsyncSession]:
 
 @pytest.fixture
 async def api_client(fastapi_app: FastAPI) -> AsyncGenerator[AsyncClient]:
-    async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://v1/") as client:
+    async with AsyncClient(
+        transport=ASGITransport(app=fastapi_app), base_url="http://v1/"
+    ) as client:
         yield client
 
 

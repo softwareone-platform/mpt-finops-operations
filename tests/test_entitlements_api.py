@@ -37,7 +37,9 @@ async def test_get_all_entitlements_empty_db(api_client: AsyncClient):
     assert response.json()["items"] == []
 
 
-async def test_get_all_entitlements_single_page(entitlement_aws, entitlement_gcp, api_client: AsyncClient):
+async def test_get_all_entitlements_single_page(
+    entitlement_aws, entitlement_gcp, api_client: AsyncClient
+):
     response = await api_client.get("/entitlements/")
 
     assert response.status_code == 200

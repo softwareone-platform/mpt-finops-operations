@@ -17,7 +17,11 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
 
     @classmethod
     def _get_generic_cls_args(cls):
-        return next(base_cls.__args__ for base_cls in cls.__orig_bases__ if base_cls.__origin__ is BaseRepository)
+        return next(
+            base_cls.__args__
+            for base_cls in cls.__orig_bases__
+            if base_cls.__origin__ is BaseRepository
+        )
 
     @property
     def model_cls(self) -> type[ModelT]:
@@ -54,7 +58,9 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         results = await self.session.exec(select(self.model_cls))
         return results.all()
 
-    async def fetch_page(self, pagination_params: LimitOffsetParams | None = None) -> LimitOffsetPage[ModelT]:
+    async def fetch_page(
+        self, pagination_params: LimitOffsetParams | None = None
+    ) -> LimitOffsetPage[ModelT]:
         return await paginate(self.session, self.model_cls, pagination_params)
 
     async def update(self, id: str | UUID, data: ModelUpdateT) -> ModelT:
