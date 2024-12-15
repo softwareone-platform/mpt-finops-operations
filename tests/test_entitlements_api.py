@@ -10,9 +10,9 @@ async def test_can_create_entitlements(api_client: AsyncClient, db_session: Asyn
     response = await api_client.post(
         "/entitlements/",
         json={
-            "sponsorName": "AWS",
-            "sponsorExternalId": "EXTERNAL_ID_987123",
-            "sponsorContainerId": "SPONSOR_CONTAINER_ID_1234",
+            "sponsor_name": "AWS",
+            "sponsor_external_id": "EXTERNAL_ID_987123",
+            "sponsor_container_id": "SPONSOR_CONTAINER_ID_1234",
         },
     )
 
@@ -20,10 +20,10 @@ async def test_can_create_entitlements(api_client: AsyncClient, db_session: Asyn
     data = response.json()
 
     assert data["id"] is not None
-    assert data["activatedAt"] is None
-    assert data["sponsorName"] == "AWS"
-    assert data["sponsorExternalId"] == "EXTERNAL_ID_987123"
-    assert data["sponsorContainerId"] == "SPONSOR_CONTAINER_ID_1234"
+    assert data["activated_at"] is None
+    assert data["sponsor_name"] == "AWS"
+    assert data["sponsor_external_id"] == "EXTERNAL_ID_987123"
+    assert data["sponsor_container_id"] == "SPONSOR_CONTAINER_ID_1234"
 
     result = await db_session.exec(select(Entitlement).where(Entitlement.id == data["id"]))
     assert result.one_or_none() is not None
@@ -57,24 +57,24 @@ async def test_can_update_entitlements(entitlement_aws, api_client):
 
     update_response = await api_client.patch(
         f"/entitlements/{entitlement_aws.id}",
-        json={"sponsorName": "GCP"},
+        json={"sponsor_name": "GCP"},
     )
 
     assert update_response.status_code == 200
     update_data = update_response.json()
 
-    assert update_data["sponsorName"] == "GCP"
+    assert update_data["sponsor_name"] == "GCP"
 
     get_response = await api_client.get(f"/entitlements/{entitlement_aws.id}")
-    assert get_response.json()["sponsorName"] == "GCP"
+    assert get_response.json()["sponsor_name"] == "GCP"
 
 
 async def test_create_entitlement_with_incomplete_data(api_client: AsyncClient):
     response = await api_client.post(
         "/entitlements/",
         json={
-            "sponsorName": "AWS",
-            "sponsorExternalId": "EXTERNAL_ID_987123",
+            "sponsor_name": "AWS",
+            "sponsor_external_id": "EXTERNAL_ID_987123",
         },
     )
 
@@ -82,4 +82,4 @@ async def test_create_entitlement_with_incomplete_data(api_client: AsyncClient):
     [detail] = response.json()["detail"]
 
     assert detail["type"] == "missing"
-    assert detail["loc"] == ["body", "sponsorContainerId"]
+    assert detail["loc"] == ["body", "sponsor_container_id"]

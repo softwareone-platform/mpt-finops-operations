@@ -1,7 +1,5 @@
 from typing import Any
 
-from pydantic.alias_generators import to_snake
-
 from app.models import UUIDModel
 
 
@@ -16,8 +14,7 @@ def assert_json_contains_model(json: dict[str, Any], expected_model: UUIDModel) 
     actual_dict = items_by_id[str(expected_model.id)]
 
     for key, actual_value in actual_dict.items():
-        if to_snake(key) not in expected_dict:
-            raise AssertionError(f"{expected_model} has no attribute {to_snake(key)}")
+        if key not in expected_dict:
+            raise AssertionError(f"{expected_model} has no attribute {key}")
 
-        expected_value = expected_dict[to_snake(key)]
-        assert expected_value == actual_value
+        assert expected_dict[key] == actual_value

@@ -2,7 +2,6 @@ import datetime
 import uuid
 
 import sqlalchemy as sa
-from fastapi_camelcase import CamelModel
 from sqlmodel import Field, SQLModel
 
 
@@ -66,15 +65,15 @@ class Entitlement(EntitlementBase, TimestampModel, UUIDModel, table=True):
     )
 
 
-class EntitlementRead(CamelModel, EntitlementBase, UUIDModel):
+class EntitlementRead(EntitlementBase, UUIDModel):
     activated_at: datetime.datetime | None
 
 
-class EntitlementCreate(CamelModel, EntitlementBase):
+class EntitlementCreate(EntitlementBase):
     pass
 
 
-class EntitlementUpdate(CamelModel, EntitlementBase):
+class EntitlementUpdate(EntitlementBase):
     sponsor_name: str | None = None
     sponsor_external_id: str | None = None
     sponsor_container_id: str | None = None

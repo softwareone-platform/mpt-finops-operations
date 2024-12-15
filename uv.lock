@@ -235,16 +235,6 @@ wheels = [
 ]
 
 [[package]]
-name = "fastapi-camelcase"
-version = "2.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "pyhumps" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/d3/aa53e6b3447bec5326dfc246b5705eac3d0ada961fc60144f7a482358765/fastapi_camelcase-2.0.0.tar.gz", hash = "sha256:96925a604778b36784a68aeae4ecbbc04936cf4b7f4a09a26ca6292ab2849929", size = 3520 }
-
-[[package]]
 name = "fastapi-cli"
 version = "0.0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -522,7 +512,6 @@ dependencies = [
     { name = "asyncpg" },
     { name = "fastapi", extra = ["standard"] },
     { name = "fastapi-async-sqlalchemy" },
-    { name = "fastapi-camelcase" },
     { name = "fastapi-pagination" },
     { name = "pycountry" },
     { name = "pydantic-extra-types" },
@@ -546,30 +535,29 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", specifier = ">=1.14.0" },
-    { name = "asyncpg", specifier = ">=0.30.0" },
-    { name = "fastapi", extras = ["standard"], specifier = ">=0.115.5" },
-    { name = "fastapi-async-sqlalchemy", specifier = ">=0.6.1" },
-    { name = "fastapi-camelcase", specifier = ">=2.0.0" },
-    { name = "fastapi-pagination", specifier = ">=0.12.32" },
-    { name = "pycountry", specifier = ">=24.6.1" },
-    { name = "pydantic-extra-types", specifier = ">=2.10.0" },
-    { name = "pydantic-settings", specifier = ">=2.6.1" },
-    { name = "python-dotenv", specifier = ">=1.0.1" },
-    { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.36" },
-    { name = "sqlmodel", specifier = ">=0.0.22" },
+    { name = "alembic", specifier = "==1.14.*" },
+    { name = "asyncpg", specifier = "==0.30.*" },
+    { name = "fastapi", extras = ["standard"], specifier = "==0.115.*" },
+    { name = "fastapi-async-sqlalchemy", specifier = "==0.6.*" },
+    { name = "fastapi-pagination", specifier = "==0.12.*" },
+    { name = "pycountry", specifier = "==24.6.*" },
+    { name = "pydantic-extra-types", specifier = "==2.10.*" },
+    { name = "pydantic-settings", specifier = "==2.6.*" },
+    { name = "python-dotenv", specifier = "==1.0.*" },
+    { name = "sqlalchemy", extras = ["asyncio"], specifier = "==2.0.*" },
+    { name = "sqlmodel", specifier = "==0.0.*" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bandit", specifier = ">=1.8.0" },
-    { name = "httpx", specifier = ">=0.27.2" },
-    { name = "ipython", specifier = ">=8.30.0" },
-    { name = "pytest", specifier = ">=8.3.3" },
-    { name = "pytest-asyncio", specifier = ">=0.24.0" },
-    { name = "pytest-cov", specifier = ">=6.0.0" },
-    { name = "ruff", specifier = ">=0.8.0" },
-    { name = "typer", specifier = ">=0.13.1" },
+    { name = "bandit", specifier = ">=1.8.0,<2.0" },
+    { name = "httpx", specifier = ">=0.27.2,<1.0" },
+    { name = "ipython", specifier = ">=8.30.0,<9.0" },
+    { name = "pytest", specifier = ">=8.3.3,<9.0" },
+    { name = "pytest-asyncio", specifier = ">=0.24.0,<1.0" },
+    { name = "pytest-cov", specifier = ">=6.0.0,<7.0" },
+    { name = "ruff", specifier = ">=0.8.0,<1.0" },
+    { name = "typer", specifier = ">=0.13.1,<1.0" },
 ]
 
 [[package]]
@@ -741,15 +729,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8e/62/8336eff65bcbc8e4cb5d05b55faf041285951b6e80f33e2bff2024788f31/pygments-2.18.0.tar.gz", hash = "sha256:786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199", size = 4891905 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f7/3f/01c8b82017c199075f8f788d0d906b9ffbbc5a47dc9918a945e13d5a2bda/pygments-2.18.0-py3-none-any.whl", hash = "sha256:b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a", size = 1205513 },
-]
-
-[[package]]
-name = "pyhumps"
-version = "3.8.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c4/83/fa6f8fb7accb21f39e8f2b6a18f76f6d90626bdb0a5e5448e5cc9b8ab014/pyhumps-3.8.0.tar.gz", hash = "sha256:498026258f7ee1a8e447c2e28526c0bea9407f9a59c03260aee4bd6c04d681a3", size = 9018 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/11/a1938340ecb32d71e47ad4914843775011e6e9da59ba1229f181fef3119e/pyhumps-3.8.0-py3-none-any.whl", hash = "sha256:060e1954d9069f428232a1adda165db0b9d8dfdce1d265d36df7fbff540acfd6", size = 6095 },
 ]
 
 [[package]]
