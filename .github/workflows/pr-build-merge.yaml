@@ -57,13 +57,26 @@ jobs:
         run: uv run ruff check .
 
       - name: Run security checks
-        run: uv run bandit -c pyproject.toml -r .
+        run: uv run bandit -c pyproject.toml -r . -f json -o bandit.json
 
       - name: Run tests
         run: uv run pytest
         env:
           FFC_OPERATIONS_POSTGRES_HOST: localhost
           FFC_OPERATIONS_POSTGRES_PORT: 5432
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          pollingTimeoutSec: 600
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Save code coverage report in the artefacts
         uses: actions/upload-artifact@v4

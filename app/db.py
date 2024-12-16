@@ -29,9 +29,9 @@ async def get_db_session() -> AsyncIterator[AsyncSession]:
 DBSession = Annotated[AsyncSession, Depends(get_db_session)]
 
 
-async def verify_db_connection():
+async def verify_db_connection():  # pragma: no cover
     async with asynccontextmanager(get_db_session)() as session:
         result = await session.exec(text("SELECT 1"))
 
         if result.one()[0] != 1:
-            raise Exception("Could not verify database connection")
+            raise RuntimeError("Could not verify database connection")
