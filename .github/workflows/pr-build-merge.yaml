@@ -12,6 +12,21 @@ permissions:
 
 jobs:
   build:
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: mysecurepass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -44,15 +59,11 @@ jobs:
       - name: Run security checks
         run: uv run bandit -c pyproject.toml -r .
 
-      - name: Start the testing DB container
-        run: docker compose up test_db -d
-
       - name: Run tests
         run: uv run pytest
-
-      - name: Stop the testing DB container
-        if: always()
-        run: docker compose down test_db
+        env:
+          FFC_OPERATIONS_POSTGRES_HOST: localhost
+          FFC_OPERATIONS_POSTGRES_PORT: 5432
 
       - name: Save code coverage report in the artefacts
         uses: actions/upload-artifact@v4
