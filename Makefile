@@ -29,13 +29,8 @@ tests:
 	uv run pytest
 
 .PHONY: db-cli
-db-cli: test = false
 db-cli:
-	@if [[ "$(test)" == "false" ]]; then \
-		pgcli "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"; \
-	else \
-		pgcli "postgresql://${TEST_POSTGRES_USER}:${TEST_POSTGRES_PASSWORD}@${TEST_POSTGRES_HOST}:${TEST_POSTGRES_PORT}/${TEST_POSTGRES_DB}"; \
-	fi
+	pgcli "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
 
 .PHONY: gen-migration
 gen-migration: message =
