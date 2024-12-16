@@ -1,9 +1,13 @@
 [project]
 name = "mpt-finops-operations"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.12"
+description = "SWO FinOps For Cloud Operations API"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+    {name = "SoftwareOne AG"},
+]
+license = {file = "LICENSE.txt"}
+requires-python = ">=3.12,<4"
 dependencies = [
     "alembic==1.14.*",
     "asyncpg==0.30.*",
@@ -38,6 +42,7 @@ output-format = "full"
 extend-exclude = [
     "migrations/versions/",
 ]
+cache-dir = ".cache/ruff"
 
 [tool.ruff.lint]
 select = [
@@ -71,14 +76,22 @@ testpaths = "tests/"
 pythonpath = "."
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
-addopts = """
-    -vvv \
-    --cov --cov-report html \
-"""
+addopts = "--cov=app --cov-report=term-missing --cov-report=html --cov-report=xml"
+cache_dir = ".cache/pytest"
 
 [tool.coverage.run]
 branch = true
 source = ["app"]
+relative_files = true
 
 [tool.coverage.report]
 show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "pragma: no branch"
+]
+
+[tool.mypy]
+warn_no_return = false
+ignore_missing_imports = true
+cache_dir = ".cache/mypy"
