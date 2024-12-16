@@ -16,7 +16,7 @@ services:
         condition: "service_healthy"
     command: bash -c "uv run fastapi dev --host 0.0.0.0 --port 8000"
     environment:
-      POSTGRES_HOST: db
+      FFC_OPERATIONS_POSTGRES_HOST: db
     env_file:
       - .env
     ports:
@@ -25,10 +25,14 @@ services:
   db:
     image: postgres:17
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: "${FFC_OPERATIONS_POSTGRES_DB}"
+      POSTGRES_USER: "${FFC_OPERATIONS_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${FFC_OPERATIONS_POSTGRES_PASSWORD}"
+      POSTGRES_HOST: "${FFC_OPERATIONS_POSTGRES_HOST}"
+      POSTGRES_PORT: "${FFC_OPERATIONS_POSTGRES_PORT}"
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${FFC_OPERATIONS_POSTGRES_PORT}:5432"
     networks:
       - docker_network
     healthcheck:
@@ -60,7 +64,7 @@ services:
         uv run pytest
       "
     environment:
-      POSTGRES_HOST: db
+      FFC_OPERATIONS_POSTGRES_HOST: db
     env_file:
       - .env
 
