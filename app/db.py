@@ -1,10 +1,12 @@
 import sys
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlmodel import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app import settings
@@ -25,3 +27,11 @@ async def get_db_session() -> AsyncIterator[AsyncSession]:
 
 
 DBSession = Annotated[AsyncSession, Depends(get_db_session)]
+
+
+async def verify_db_connection():
+    async with asynccontextmanager(get_db_session)() as session:
+        result = await session.exec(text("SELECT 1"))
+
+        if result.one()[0] != 1:
+            raise Exception("Could not verify database connection")
