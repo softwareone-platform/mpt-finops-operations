@@ -1,0 +1,85 @@
+from httpx import AsyncClient
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from app.models import Entitlement
+from tests.utils import assert_json_contains_model
+
+
+async def test_can_create_entitlements(api_client: AsyncClient, db_session: AsyncSession):
+    response = await api_client.post(
+        "/entitlements/",
+        json={
+            "sponsor_name": "AWS",
+            "sponsor_external_id": "EXTERNAL_ID_987123",
+            "sponsor_container_id": "SPONSOR_CONTAINER_ID_1234",
+        },
+    )
+
+    assert response.status_code == 201
+    data = response.json()
+
+    assert data["id"] is not None
+    assert data["activated_at"] is None
+    assert data["sponsor_name"] == "AWS"
+    assert data["sponsor_external_id"] == "EXTERNAL_ID_987123"
+    assert data["sponsor_container_id"] == "SPONSOR_CONTAINER_ID_1234"
+
+    result = await db_session.exec(select(Entitlement).where(Entitlement.id == data["id"]))
+    assert result.one_or_none() is not None
+
+
+async def test_get_all_entitlements_empty_db(api_client: AsyncClient):
+    response = await api_client.get("/entitlements/")
+
+    assert response.status_code == 200
+    assert response.json()["total"] == 0
+    assert response.json()["items"] == []
+
+
+async def test_get_all_entitlements_single_page(
+    entitlement_aws, entitlement_gcp, api_client: AsyncClient
+):
+    response = await api_client.get("/entitlements/")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data["total"] == 2
+    assert len(data["items"]) == data["total"]
+
+    assert_json_contains_model(data, entitlement_aws)
+    assert_json_contains_model(data, entitlement_gcp)
+
+
+async def test_can_update_entitlements(entitlement_aws, api_client):
+    assert entitlement_aws.sponsor_name == "AWS"
+
+    update_response = await api_client.patch(
+        f"/entitlements/{entitlement_aws.id}",
+        json={"sponsor_name": "GCP"},
+    )
+
+    assert update_response.status_code == 200
+    update_data = update_response.json()
+
+    assert update_data["sponsor_name"] == "GCP"
+
+    get_response = await api_client.get(f"/entitlements/{entitlement_aws.id}")
+    assert get_response.json()["sponsor_name"] == "GCP"
+
+
+async def test_create_entitlement_with_incomplete_data(api_client: AsyncClient):
+    response = await api_client.post(
+        "/entitlements/",
+        json={
+            "sponsor_name": "AWS",
+            "sponsor_external_id": "EXTERNAL_ID_987123",
+        },
+    )
+
+    assert response.status_code == 422
+    [detail] = response.json()["detail"]
+
+    assert detail["type"] == "missing"
+    assert detail["loc"] == ["body", "sponsor_container_id"]

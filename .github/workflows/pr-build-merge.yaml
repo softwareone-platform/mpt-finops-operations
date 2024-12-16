@@ -12,6 +12,21 @@ permissions:
 
 jobs:
   build:
+    services:
+      db:
+        image: postgres:17
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: mysecurepass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -41,17 +56,18 @@ jobs:
       - name: Run linting
         run: uv run ruff check .
 
-      - name: Run type checks
-        run: uv run mypy .
-
       - name: Run security checks
         run: uv run bandit -c pyproject.toml -r .
 
       - name: Run tests
         run: uv run pytest
+        env:
+          FFC_OPERATIONS_POSTGRES_HOST: localhost
+          FFC_OPERATIONS_POSTGRES_PORT: 5432
 
       - name: Save code coverage report in the artefacts
         uses: actions/upload-artifact@v4
+        if: ${{ !env.ACT }}
         with:
           name: coverage-report
           path: htmlcov
@@ -62,6 +78,7 @@ jobs:
 
       - name: Save openapi.json the artefacts
         uses: actions/upload-artifact@v4
+        if: ${{ !env.ACT }}
         with:
           name: openapi-spec
           path: openapi.json

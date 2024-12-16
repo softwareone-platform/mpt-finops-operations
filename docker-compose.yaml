@@ -1,7 +1,22 @@
+networks:
+  docker_network:
+    driver: bridge
+
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    working_dir: /app
     restart: always
+    networks:
+      - docker_network
+    depends_on:
+      db:
+        condition: "service_healthy"
+    command: bash -c "uv run fastapi dev --host 0.0.0.0 --port 8000"
+    environment:
+      FFC_OPERATIONS_POSTGRES_HOST: db
     env_file:
       - .env
     ports:
@@ -10,29 +25,79 @@ services:
   db:
     image: postgres:17
     restart: unless-stopped
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: "${FFC_OPERATIONS_POSTGRES_DB}"
+      POSTGRES_USER: "${FFC_OPERATIONS_POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${FFC_OPERATIONS_POSTGRES_PASSWORD}"
+      POSTGRES_HOST: "${FFC_OPERATIONS_POSTGRES_HOST}"
+      POSTGRES_PORT: "${FFC_OPERATIONS_POSTGRES_PORT}"
     ports:
-      - "5433:5432"
+      - "${FFC_OPERATIONS_POSTGRES_PORT}:5432"
+    networks:
+      - docker_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$${POSTGRES_DB} --username=$${POSTRGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    image: dcagatay/pwless-pgadmin4
+  app_test:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
     depends_on:
       db:
         condition: "service_healthy"
+    networks:
+      - docker_network
+    command: >
+      bash -c "
+        set -e
+
+        # Run Ruff to check code style
+        uv run ruff check .
+
+        # Check formatting with Ruff
+        uv run ruff format --check --diff .
+
+        # Run tests with pytest
+        uv run pytest
+      "
+    environment:
+      FFC_OPERATIONS_POSTGRES_HOST: db
     env_file:
       - .env
-    ports:
-      - "8001:80"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 80"]
-      start_period: 5s
-      interval: 2s
-      timeout: 2s
-      retries: 15
+
+  bash:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: bash
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+
+  format:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: >
+      bash -c "
+        set -e
+        # Run Ruff to fix code style
+        uv run ruff check . --fix --fix-only --show-fixes
+
+        # Run Ruff to format code
+        uv run ruff format .
+      "
+    env_file:
+      - .env
+
+  bandit:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: bash -c "uv run bandit -c pyproject.toml -r ."
+    env_file:
+      - .env
