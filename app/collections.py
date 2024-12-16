@@ -11,7 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models import Entitlement, EntitlementCreate, EntitlementUpdate, UUIDModel
 
 
-class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQLModel]:
+class BaseCollection[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQLModel]:
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -20,7 +20,7 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         return next(
             base_cls.__args__
             for base_cls in cls.__orig_bases__
-            if base_cls.__origin__ is BaseRepository
+            if base_cls.__origin__ is BaseCollection
         )
 
     @property
@@ -93,7 +93,7 @@ class BaseRepository[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         return True
 
 
-class EntitlementRepository(BaseRepository[Entitlement, EntitlementCreate, EntitlementUpdate]):
+class EntitlementCollection(BaseCollection[Entitlement, EntitlementCreate, EntitlementUpdate]):
     pass
     # async def terminate(self, id: str | UUID) -> Entitlement:
     #     async with self.updating(id=id) as entitlement:

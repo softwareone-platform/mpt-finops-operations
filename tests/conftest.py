@@ -1,6 +1,5 @@
 import uuid
 from collections.abc import AsyncGenerator
-from dataclasses import dataclass
 
 import fastapi_pagination
 import pytest
@@ -11,10 +10,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.collections import EntitlementCollection
 from app.db import db_engine
 from app.main import app
 from app.models import Entitlement, EntitlementCreate
-from app.repositories import EntitlementRepository
 
 
 def pytest_collection_modifyitems(items):
@@ -54,21 +53,14 @@ async def api_client(fastapi_app: FastAPI) -> AsyncGenerator[AsyncClient]:
         yield client
 
 
-@dataclass
-class RepositoryContainer:
-    entitlements: EntitlementRepository
+@pytest.fixture
+def entitlements_collection(db_session: AsyncSession) -> EntitlementCollection:
+    return EntitlementCollection(db_session)
 
 
 @pytest.fixture
-def repos(db_session: AsyncSession) -> RepositoryContainer:
-    return RepositoryContainer(
-        entitlements=EntitlementRepository(db_session),
-    )
-
-
-@pytest.fixture
-async def entitlement_aws(repos: RepositoryContainer) -> Entitlement:
-    return await repos.entitlements.create(
+async def entitlement_aws(entitlements_collection: EntitlementCollection) -> Entitlement:
+    return await entitlements_collection.create(
         EntitlementCreate(
             sponsor_name="AWS",
             sponsor_external_id=f"EXTERNAL_ID_{uuid.uuid4().hex[:8]}",
@@ -78,8 +70,8 @@ async def entitlement_aws(repos: RepositoryContainer) -> Entitlement:
 
 
 @pytest.fixture
-async def entitlement_gcp(repos: RepositoryContainer) -> Entitlement:
-    return await repos.entitlements.create(
+async def entitlement_gcp(entitlements_collection: EntitlementCollection) -> Entitlement:
+    return await entitlements_collection.create(
         EntitlementCreate(
             sponsor_name="GCP",
             sponsor_external_id=f"EXTERNAL_ID_{uuid.uuid4().hex[:8]}",
