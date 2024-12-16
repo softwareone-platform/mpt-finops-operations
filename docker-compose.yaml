@@ -1,7 +1,3 @@
-networks:
-  docker_network:
-    driver: bridge
-
 services:
   app:
     build:
@@ -9,8 +5,6 @@ services:
       dockerfile: dev.Dockerfile
     working_dir: /app
     restart: always
-    networks:
-      - docker_network
     depends_on:
       db:
         condition: "service_healthy"
@@ -29,12 +23,8 @@ services:
       POSTGRES_DB: "${FFC_OPERATIONS_POSTGRES_DB}"
       POSTGRES_USER: "${FFC_OPERATIONS_POSTGRES_USER}"
       POSTGRES_PASSWORD: "${FFC_OPERATIONS_POSTGRES_PASSWORD}"
-      POSTGRES_HOST: "${FFC_OPERATIONS_POSTGRES_HOST}"
-      POSTGRES_PORT: "${FFC_OPERATIONS_POSTGRES_PORT}"
     ports:
       - "${FFC_OPERATIONS_POSTGRES_PORT}:5432"
-    networks:
-      - docker_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$${POSTGRES_DB} --username=$${POSTRGRES_USER}"]
       interval: 10s
@@ -48,8 +38,6 @@ services:
     depends_on:
       db:
         condition: "service_healthy"
-    networks:
-      - docker_network
     command: >
       bash -c "
         set -e
