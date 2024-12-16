@@ -1,12 +1,14 @@
 import pathlib
 
 from pydantic import PostgresDsn, computed_field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=PROJECT_ROOT / ".env", env_file_encoding="utf-8")
+
     postgres_db: str
     postgres_user: str
     postgres_password: str
