@@ -95,9 +95,3 @@ class BaseCollection[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
 
 class EntitlementCollection(BaseCollection[Entitlement, EntitlementCreate, EntitlementUpdate]):
     pass
-    # async def terminate(self, id: str | UUID) -> Entitlement:
-    #     async with self.updating(id=id) as entitlement:
-    #         entitlement.terminated_at = datetime.datetime.now(datetime.UTC)
-    #         entitlement.terminated_by = ...
-    #
-    #     return entitlement
