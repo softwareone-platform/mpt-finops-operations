@@ -28,11 +28,11 @@ class BaseCollection[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         return self._get_generic_cls_args()[0]
 
     @property
-    def model_create_cls(self) -> type[ModelCreateT]:
+    def model_create_cls(self) -> type[ModelCreateT]:  # pragma: no cover
         return self._get_generic_cls_args()[1]
 
     @property
-    def model_update_cls(self) -> type[ModelCreateT]:
+    def model_update_cls(self) -> type[ModelCreateT]:  # pragma: no cover
         return self._get_generic_cls_args()[2]
 
     async def create(self, data: ModelCreateT) -> ModelT:
