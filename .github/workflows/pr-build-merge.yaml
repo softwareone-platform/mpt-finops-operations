@@ -68,12 +68,14 @@ jobs:
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v4
+        if: ${{ !env.ACT }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: SonarQube Quality Gate check
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@master
+        if: ${{ !env.ACT }}
         with:
           pollingTimeoutSec: 600
         env:
