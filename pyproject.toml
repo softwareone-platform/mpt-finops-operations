@@ -84,6 +84,14 @@ cache_dir = ".cache/pytest"
 branch = true
 source = ["app"]
 relative_files = true
+# SQLAlchemy uses greenlets to pass context, so we need to specify this here,
+# so that the coverage is calculated correctly. 'thread' is the default value,
+# so including it in case some code relies on it
+#
+# refs:
+#     * https://coverage.readthedocs.io/en/7.6.9/config.html#run-concurrency
+#     * https://github.com/nedbat/coveragepy/issues/1082
+concurrency = ["thread", "greenlet"]
 
 [tool.coverage.report]
 show_missing = true

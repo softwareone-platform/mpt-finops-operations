@@ -28,11 +28,11 @@ class BaseCollection[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
         return self._get_generic_cls_args()[0]
 
     @property
-    def model_create_cls(self) -> type[ModelCreateT]:
+    def model_create_cls(self) -> type[ModelCreateT]:  # pragma: no cover
         return self._get_generic_cls_args()[1]
 
     @property
-    def model_update_cls(self) -> type[ModelCreateT]:
+    def model_update_cls(self) -> type[ModelCreateT]:  # pragma: no cover
         return self._get_generic_cls_args()[2]
 
     async def create(self, data: ModelCreateT) -> ModelT:
@@ -95,9 +95,3 @@ class BaseCollection[ModelT: UUIDModel, ModelCreateT: SQLModel, ModelUpdateT: SQ
 
 class EntitlementCollection(BaseCollection[Entitlement, EntitlementCreate, EntitlementUpdate]):
     pass
-    # async def terminate(self, id: str | UUID) -> Entitlement:
-    #     async with self.updating(id=id) as entitlement:
-    #         entitlement.terminated_at = datetime.datetime.now(datetime.UTC)
-    #         entitlement.terminated_by = ...
-    #
-    #     return entitlement

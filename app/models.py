@@ -49,10 +49,6 @@ class EntitlementBase(SQLModel):
     sponsor_name: str = Field(max_length=255, nullable=False)
     sponsor_external_id: str = Field(max_length=255, nullable=False)
     sponsor_container_id: str = Field(max_length=255, nullable=False)
-    # activated_at: datetime.datetime | None = None
-    # activated_by: uuid.UUID | None = None
-    # terminated_at: datetime.datetime | None = None
-    # terminated_by: uuid.UUID | None = None
 
 
 class Entitlement(EntitlementBase, TimestampModel, UUIDModel, table=True):
