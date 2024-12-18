@@ -25,7 +25,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "bandit>=1.8.0,<2.0",
-    "gevent>=24.11.1",
     "httpx>=0.27.2,<1.0",
     "ipython>=8.30.0,<9.0",
     "pre-commit>=4.0.1,<5.0",
@@ -85,9 +84,14 @@ cache_dir = ".cache/pytest"
 branch = true
 source = ["app"]
 relative_files = true
-# gevent is needed for fastapi projects with async/await calls, otherwise the coverage misses them
-# ref: https://stackoverflow.com/a/76033894
-concurrency = ["gevent"]
+# SQLAlchemy uses greenlets to pass context, so we need to specify this here,
+# so that the coverage is calculated correctly. 'thread' is the default value,
+# so including it in case some code relies on it
+#
+# refs:
+#     * https://coverage.readthedocs.io/en/7.6.9/config.html#run-concurrency
+#     * https://github.com/nedbat/coveragepy/issues/1082
+concurrency = ["thread", "greenlet"]
 
 [tool.coverage.report]
 show_missing = true
