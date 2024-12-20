@@ -5,7 +5,7 @@ from fastapi_pagination.limit_offset import LimitOffsetPage
 
 from app.collections import EntitlementCollection
 from app.db import DBSession
-from app.models import EntitlementCreate, EntitlementRead, EntitlementUpdate
+from app.models import EntitlementCreate, EntitlementRead
 
 router = APIRouter()
 
@@ -26,9 +26,3 @@ async def get_entitlement_by_id(id: UUID, session: DBSession):
 async def create_entitlement(data: EntitlementCreate, session: DBSession):
     entitlements = EntitlementCollection(session=session)
     return await entitlements.create(data=data)
-
-
-@router.patch("/{id}", response_model=EntitlementRead)
-async def update_entitlement(id: UUID, data: EntitlementUpdate, session: DBSession):
-    entitlements = EntitlementCollection(session=session)
-    return await entitlements.update(id=id, data=data)
